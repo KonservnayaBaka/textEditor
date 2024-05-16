@@ -1,0 +1,11 @@
+JC = javac
+JFLAGS = -g -sourcepath .
+CLASSES = FileOperations Main Main TextEditor
+
+all: $(CLASSES:=.class)
+
+.class: .java
+    $(JC) $(JFLAGS) $*.java
+
+clean:
+    rm -f *.class

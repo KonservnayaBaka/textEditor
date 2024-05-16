@@ -26,10 +26,8 @@ public class FileOperations {
         }
     }
 
-    public static void editFile() {
+    public static void editFile(String filePath) {
         try {
-            System.out.println("Введите путь к файлу для редактирования:");
-            String filePath = reader.readLine();
             File file = new File(filePath);
             if (!file.exists()) {
                 System.out.println("Файл не существует.");
@@ -100,10 +98,8 @@ public class FileOperations {
         }
     }
 
-    public static void viewFileContent() {
+    public static void viewFileContent(String filePath) {
         try {
-            System.out.println("Введите путь к файлу для просмотра содержимого:");
-            String filePath = reader.readLine();
             File file = new File(filePath);
             if (!file.exists()) {
                 System.out.println("Файл не существует.");
@@ -120,10 +116,8 @@ public class FileOperations {
         }
     }
 
-    public static void deleteFile() {
+    public static void deleteFile(String filePath) {
         try {
-            System.out.println("Введите путь к файлу для удаления:");
-            String filePath = reader.readLine();
             File file = new File(filePath);
             if (!file.exists()) {
                 System.out.println("Файл не существует.");
@@ -134,7 +128,7 @@ public class FileOperations {
             } else {
                 System.out.println("Ошибка при удалении файла.");
             }
-        } catch (IOException e) {
+        } catch (Exception e) { // можно добавить общий блок catch для обработки любых других исключений
             e.printStackTrace();
         }
     }
