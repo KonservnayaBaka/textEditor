@@ -10,12 +10,17 @@ public class TextEditor {
     public void start() {
         System.out.println("Добро пожаловать в текстовый редактор!");
         while (true) {
-            System.out.println("1. Создать файл");
-            System.out.println("2. Редактировать файл");
-            System.out.println("3. Просмотреть содержимое файла");
-            System.out.println("4. Удалить файл");
-            System.out.println("5. Установить путь к файлу"); // Новый пункт меню
-            System.out.println("6. Выйти");
+            if (filePath != null && !filePath.isEmpty()) {
+                System.out.println("Текущий файл: " + filePath);
+            }
+            System.out.println("+---------------------------------+");
+            System.out.println("| 1. Создать файл                 |");
+            System.out.println("| 2. Редактировать файл           |");
+            System.out.println("| 3. Просмотреть содержимое файла |");
+            System.out.println("| 4. Удалить файл                 |");
+            System.out.println("| 5. Установить путь к файлу      |");
+            System.out.println("| 6. Выйти                        |");
+            System.out.println("+---------------------------------+");
 
             try {
                 String choice = reader.readLine().trim();
@@ -32,7 +37,7 @@ public class TextEditor {
                     case "4":
                         FileOperations.deleteFile(filePath);
                         break;
-                    case "5": // Новый case для вызова метода setFilePath()
+                    case "5":
                         setFilePath();
                         break;
                     case "6":
@@ -53,13 +58,38 @@ public class TextEditor {
             String filePath = reader.readLine();
             File file = new File(filePath);
             if (!file.exists()) {
-                System.out.println("Файл не существует.");
-                return;
+                System.out.println("Файл не существует. Что вы хотите сделать?");
+                System.out.println("1. Создать файл с такими параметрами");
+                System.out.println("2. Создать файл с другими параметрами");
+                System.out.println("3. Указать путь еще раз");
+                System.out.println("4. Выйти");
+                int choice = Integer.parseInt(reader.readLine());
+                switch (choice) {
+                    case 1:
+                        FileOperations.createFileWithPath(filePath);
+                        this.filePath = filePath;
+                        System.out.println("Путь к файлу успешно установлен.");
+                        break;
+                    case 2:
+                        FileOperations.createFile();
+                        setFilePath();
+                        break;
+                    case 3:
+                        setFilePath();
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        System.out.println("Неверный выбор. Пожалуйста, попробуйте снова.");
+                        setFilePath();
+                }
+            } else {
+                this.filePath = filePath;
+                System.out.println("Путь к файлу успешно установлен.");
             }
-            this.filePath = filePath; // Сохраните путь к файлу в переменной класса
-            System.out.println("Путь к файлу успешно установлен.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

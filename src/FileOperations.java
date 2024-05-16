@@ -26,11 +26,32 @@ public class FileOperations {
         }
     }
 
+    public static void createFileWithPath(String filePath) {
+        try {
+            File directory = new File(filePath);
+            if (!directory.exists() || !directory.isDirectory()) {
+                System.out.println("Неверный путь. Проверьте правильность введенного пути к директории.");
+                return;
+            }
+
+            System.out.println("Введите название файла:");
+            String fileName = reader.readLine();
+            File file = new File(directory, fileName);
+            if (file.createNewFile()) {
+                System.out.println("Файл успешно создан.");
+            } else {
+                System.out.println("Ошибка при создании файла. Возможно, файл уже существует.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void editFile(String filePath) {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                System.out.println("Файл не существует.");
+                System.out.println("Не указан путь к файлу.");
                 return;
             }
 
@@ -102,7 +123,7 @@ public class FileOperations {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                System.out.println("Файл не существует.");
+                System.out.println("Не указан путь к файлу.");
                 return;
             }
             BufferedReader fileReader = new BufferedReader(new FileReader(file));
@@ -120,7 +141,7 @@ public class FileOperations {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                System.out.println("Файл не существует.");
+                System.out.println("Не указан путь к файлу.");
                 return;
             }
             if (file.delete()) {
@@ -128,7 +149,7 @@ public class FileOperations {
             } else {
                 System.out.println("Ошибка при удалении файла.");
             }
-        } catch (Exception e) { // можно добавить общий блок catch для обработки любых других исключений
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
