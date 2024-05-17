@@ -1,8 +1,15 @@
 import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class TextEditor {
     private BufferedReader reader;
     public static String filePath;
+    private String fileCreationTime;
+    private String fileLastModifiedTime;
+
     public TextEditor() {
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -12,13 +19,15 @@ public class TextEditor {
         while (true) {
             if (filePath != null && !filePath.isEmpty()) {
                 System.out.println("Текущий файл: " + filePath);
+                System.out.println("Время создания: " + fileCreationTime);
+                System.out.println("Время последнего редактирования: " + fileLastModifiedTime);
             }
             System.out.println("+---------------------------------+");
-            System.out.println("| 1. Создать файл                 |");
-            System.out.println("| 2. Редактировать файл           |");
-            System.out.println("| 3. Просмотреть содержимое файла |");
-            System.out.println("| 4. Удалить файл                 |");
-            System.out.println("| 5. Установить путь к файлу      |");
+            System.out.println("| 1. Установить путь к файлу      |");
+            System.out.println("| 2. Создать файл                 |");
+            System.out.println("| 3. Редактировать файл           |");
+            System.out.println("| 4. Просмотреть содержимое файла |");
+            System.out.println("| 5. Удалить файл                 |");
             System.out.println("| 6. Выйти                        |");
             System.out.println("+---------------------------------+");
 
@@ -26,19 +35,19 @@ public class TextEditor {
                 String choice = reader.readLine().trim();
                 switch (choice) {
                     case "1":
-                        FileOperations.createFile();
+                        setFilePath();
                         break;
                     case "2":
-                        FileOperations.editFile(filePath);
+                        FileOperations.createFile();
                         break;
                     case "3":
-                        FileOperations.viewFileContent(filePath);
+                        FileOperations.editFile(filePath);
                         break;
                     case "4":
-                        FileOperations.deleteFile(filePath);
+                        FileOperations.viewFileContent(filePath);
                         break;
                     case "5":
-                        setFilePath();
+                        FileOperations.deleteFile(filePath);
                         break;
                     case "6":
                         System.out.println("Выход из текстового редактора. До свидания!");
@@ -56,8 +65,9 @@ public class TextEditor {
         try {
             System.out.println("Введите путь к файлу:");
             String filePath = reader.readLine();
-            File file = new File(filePath);
-            if (!file.exists()) {
+            Path file = Paths.get(filePath);
+            File directory = new File(filePath);
+            if (!directory.exists()) {
                 System.out.println("Файл не существует. Что вы хотите сделать?");
                 System.out.println("1. Создать файл с такими параметрами");
                 System.out.println("2. Создать файл с другими параметрами");
@@ -68,6 +78,7 @@ public class TextEditor {
                     case 1:
                         FileOperations.createFileWithPath(filePath);
                         this.filePath = filePath;
+                        updateFileTimes(file);
                         System.out.println("Путь к файлу успешно установлен.");
                         break;
                     case 2:
@@ -85,6 +96,7 @@ public class TextEditor {
                 }
             } else {
                 this.filePath = filePath;
+                updateFileTimes(file);
                 System.out.println("Путь к файлу успешно установлен.");
             }
         } catch (IOException e) {
@@ -92,4 +104,10 @@ public class TextEditor {
         }
     }
 
+    private void updateFileTimes(Path file) throws IOException {
+        BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        this.fileCreationTime = dateFormat.format(new Date(attrs.creationTime().toMillis()));
+        this.fileLastModifiedTime = dateFormat.format(new Date(attrs.lastModifiedTime().toMillis()));
+    }
 }
